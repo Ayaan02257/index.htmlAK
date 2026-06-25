@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Apex Motor Group — Luxury Car Showroom</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:    #080808;
+      --fg:    #F2EDE4;
+      --card:  #111111;
+      --gold:  #C8A96E;
+      --muted: #888070;
+      --border: rgba(255,255,255,0.07);
+      --serif: 'Playfair Display', Georgia, serif;
+      --sans:  'DM Sans', system-ui, sans-serif;
+      --mono:  'DM Mono', 'Courier New', monospace;
+    }
+
+    html { scroll-behavior: smooth; font-size: 16px; }
+    body { background: var(--bg); color: var(--fg); font-family: var(--sans); font-weight: 300; overflow-x: hidden; }
+    img { display: block; max-width: 100%; }
+    a { color: inherit; text-decoration: none; }
+    button { cursor: pointer; border: none; background: none; color: inherit; font-family: inherit; }
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+    .label { font-size: 10px; letter-spacing: 0.35em; text-transform: uppercase; color: var(--gold); }
+    .label-muted { font-size: 9px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--muted); }
+
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: var(--gold); color: var(--bg);
+      font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; font-weight: 500;
+      padding: 14px 28px; border: none; cursor: pointer; transition: opacity 0.2s;
+    }
+    .btn-primary:hover { opacity: 0.88; }
+
+    .btn-outline {
+      display: inline-flex; align-items: center; gap: 10px;
+      border: 1px solid var(--border); color: var(--fg);
+      font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; font-weight: 400;
+      padding: 14px 28px; cursor: pointer; transition: border-color 0.2s;
+    }
+    .btn-outline:hover { border-color: rgba(200,169,110,0.4); }
+
+    .container { max-width: 1280px; margin: 0 auto; padding: 0 40px; }
+    @media (max-width: 768px) { .container { padding: 0 20px; } }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100; height: 76px;
+      display: flex; align-items: center;
+      transition: background 0.4s, border-color 0.4s, backdrop-filter 0.4s;
+      border-bottom: 1px solid transparent;
+    }
+    nav.scrolled { background: rgba(8,8,8,0.94); backdrop-filter: blur(12px); border-bottom-color: var(--border); }
+    nav .inner { width: 100%; max-width: 1280px; margin: 0 auto; padding: 0 40px; display: flex; align-items: center; justify-content: space-between; }
+    .logo { display: flex; align-items: baseline; gap: 10px; }
+    .logo-mark { font-family: var(--serif); font-weight: 900; font-size: 22px; letter-spacing: 0.18em; color: var(--gold); }
+    .logo-sub { font-size: 9px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--muted); }
+    .nav-links { display: flex; gap: 40px; }
+    .nav-links a { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); transition: color 0.2s; }
+    .nav-links a:hover { color: var(--fg); }
+    .hamburger { display: none; flex-direction: column; gap: 5px; padding: 4px; }
+    .hamburger span { width: 22px; height: 1px; background: var(--fg); transition: transform 0.3s, opacity 0.3s; }
+    .hamburger.open span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+    .hamburger.open span:nth-child(2) { opacity: 0; }
+    .hamburger.open span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+    .mobile-menu { display: none; flex-direction: column; position: fixed; top: 76px; left: 0; right: 0; background: var(--bg); border-bottom: 1px solid var(--border); padding: 24px 20px 32px; gap: 20px; z-index: 99; }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu a { font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); }
+    @media (max-width: 900px) { .nav-links, nav .btn-primary { display: none; } .hamburger { display: flex; } }
+
+    /* HERO */
+    #hero { position: relative; height: 100vh; min-height: 680px; display: flex; align-items: flex-end; overflow: hidden; }
+    #hero img.hero-bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transform: scale(1.04); }
+    .hero-overlay { position: absolute; inset: 0; background: linear-gradient(to top, #080808 0%, rgba(8,8,8,0.35) 55%, transparent 100%); }
+    .hero-overlay-side { position: absolute; inset: 0; background: linear-gradient(to right, rgba(8,8,8,0.6) 0%, transparent 60%); }
+    .hero-content { position: relative; z-index: 2; padding-bottom: 96px; width: 100%; max-width: 1280px; margin: 0 auto; padding-left: 40px; padding-right: 40px; }
+    .hero-content .eyebrow { margin-bottom: 22px; }
+    .hero-content h1 { font-family: var(--serif); font-weight: 900; font-size: clamp(52px, 8vw, 96px); line-height: 0.92; color: var(--fg); margin-bottom: 22px; }
+    .hero-content h1 em { font-style: normal; color: var(--gold); }
+    .hero-content p { font-size: 15px; color: var(--muted); line-height: 1.7; max-width: 420px; margin-bottom: 36px; font-weight: 300; }
+    .hero-ctas { display: flex; gap: 16px; flex-wrap: wrap; }
+    .hero-scroll-hint { position: absolute; bottom: 32px; right: 40px; display: flex; align-items: center; gap: 8px; color: var(--muted); z-index: 2; }
+    .hero-scroll-hint span { font-size: 9px; letter-spacing: 0.3em; text-transform: uppercase; }
+    .hero-scroll-hint .line { width: 32px; height: 1px; background: var(--border); }
+    .hero-scroll-hint svg { animation: bounce 1.6s ease-in-out infinite; }
+    @keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(4px)} }
+
+    /* STATS */
+    #stats { background: var(--card); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); }
+    .stat-item { padding: 40px 32px; text-align: center; border-right: 1px solid var(--border); }
+    .stat-item:last-child { border-right: none; }
+    .stat-value { font-family: var(--serif); font-weight: 900; font-size: clamp(36px, 4vw, 52px); color: var(--gold); margin-bottom: 6px; }
+    @media (max-width: 700px) {
+      .stats-grid { grid-template-columns: repeat(2,1fr); }
+      .stat-item:nth-child(2) { border-right: none; }
+      .stat-item:nth-child(1), .stat-item:nth-child(2) { border-bottom: 1px solid var(--border); }
+    }
+
+    /* COLLECTION */
+    #collection { padding: 112px 0; }
+    .section-header { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; margin-bottom: 56px; flex-wrap: wrap; }
+    .section-title { font-family: var(--serif); font-weight: 900; font-size: clamp(40px, 5vw, 60px); line-height: 0.93; color: var(--fg); margin-top: 14px; }
+    .filter-bar { display: flex; gap: 8px; flex-wrap: wrap; }
+    .filter-btn { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; padding: 8px 16px; border: 1px solid var(--border); color: var(--muted); background: none; cursor: pointer; transition: all 0.2s; }
+    .filter-btn:hover { border-color: rgba(200,169,110,0.35); color: var(--fg); }
+    .filter-btn.active { background: var(--gold); color: var(--bg); border-color: var(--gold); }
+    .vehicles-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px; background: var(--border); }
+    .vehicle-card { background: var(--bg); cursor: pointer; overflow: hidden; }
+    .vehicle-img { position: relative; height: 260px; overflow: hidden; background: var(--card); }
+    .vehicle-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.7s ease; }
+    .vehicle-card:hover .vehicle-img img { transform: scale(1.06); }
+    .vehicle-img-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(8,8,8,0.7) 0%, transparent 60%); opacity: 0; transition: opacity 0.5s; }
+    .vehicle-card:hover .vehicle-img-overlay { opacity: 1; }
+    .vehicle-badge { position: absolute; top: 16px; left: 16px; font-size: 9px; letter-spacing: 0.3em; text-transform: uppercase; background: var(--gold); color: var(--bg); padding: 5px 10px; font-weight: 500; }
+    .vehicle-info { padding: 28px 32px 32px; border-top: 1px solid var(--border); }
+    .vehicle-meta { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 18px; }
+    .vehicle-name { font-family: var(--serif); font-weight: 700; font-size: 28px; color: var(--fg); margin-top: 6px; }
+    .vehicle-price { font-family: var(--mono); font-size: 18px; font-weight: 500; color: var(--fg); }
+    .vehicle-specs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; padding-top: 18px; border-top: 1px solid var(--border); margin-bottom: 18px; }
+    .spec-value { font-family: var(--mono); font-size: 13px; font-weight: 500; color: var(--fg); margin-top: 4px; }
+    .vehicle-footer { display: flex; justify-content: space-between; align-items: center; }
+    .vehicle-color { font-size: 10px; color: var(--muted); letter-spacing: 0.15em; }
+    .vehicle-cta { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); display: flex; align-items: center; gap: 6px; transition: color 0.2s; }
+    .vehicle-card:hover .vehicle-cta { color: var(--gold); }
+    @media (max-width: 750px) { .vehicles-grid { grid-template-columns: 1fr; } }
+
+    /* HERITAGE */
+    #heritage { background: var(--card); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    .heritage-grid { display: grid; grid-template-columns: 1fr 1fr; min-height: 560px; }
+    .heritage-text { padding: 96px 80px 96px 0; display: flex; flex-direction: column; justify-content: center; }
+    .heritage-text .eyebrow { margin-bottom: 22px; }
+    .heritage-text h2 { font-family: var(--serif); font-weight: 900; font-size: clamp(40px, 4.5vw, 56px); line-height: 0.93; color: var(--fg); margin-bottom: 28px; }
+    .heritage-text h2 em { font-style: normal; color: var(--gold); }
+    .heritage-text p { font-size: 15px; color: var(--muted); line-height: 1.75; max-width: 360px; margin-bottom: 16px; font-weight: 300; }
+    .heritage-text .btn-outline { margin-top: 24px; align-self: flex-start; }
+    .heritage-image { position: relative; overflow: hidden; }
+    .heritage-image img { width: 100%; height: 100%; object-fit: cover; }
+    .heritage-image-overlay { position: absolute; inset: 0; background: linear-gradient(to left, transparent 40%, rgba(17,17,17,0.25)); }
+    .heritage-quote { position: absolute; bottom: 32px; left: 28px; right: 28px; background: rgba(8,8,8,0.82); backdrop-filter: blur(10px); border: 1px solid var(--border); padding: 22px 24px; }
+    .heritage-quote blockquote { font-family: var(--serif); font-weight: 700; font-size: 17px; color: var(--fg); line-height: 1.45; margin-bottom: 10px; font-style: italic; }
+    @media (max-width: 900px) { .heritage-grid { grid-template-columns: 1fr; } .heritage-text { padding: 72px 0; } .heritage-image { min-height: 360px; } }
+
+    /* EXPERIENCE */
+    #experience { padding: 112px 0; }
+    .experience-intro { text-align: center; margin-bottom: 72px; }
+    .experience-intro .eyebrow { margin-bottom: 16px; }
+    .experience-intro h2 { font-family: var(--serif); font-weight: 900; font-size: clamp(38px, 4.5vw, 56px); color: var(--fg); margin-top: 14px; }
+    .experience-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border); }
+    .exp-card { background: var(--bg); overflow: hidden; }
+    .exp-card-img { height: 200px; overflow: hidden; background: var(--card); position: relative; }
+    .exp-card-img img { width: 100%; height: 100%; object-fit: cover; opacity: 0.75; transition: transform 0.7s ease, opacity 0.4s; }
+    .exp-card:hover .exp-card-img img { transform: scale(1.06); opacity: 0.9; }
+    .exp-num { position: absolute; top: 16px; left: 20px; font-family: var(--serif); font-weight: 900; font-size: 72px; color: rgba(242,237,228,0.08); line-height: 1; user-select: none; }
+    .exp-card-body { padding: 28px 32px 36px; border-top: 1px solid var(--border); }
+    .exp-card-body h3 { font-family: var(--serif); font-weight: 700; font-size: 22px; color: var(--fg); margin-bottom: 14px; }
+    .exp-card-body p { font-size: 14px; color: var(--muted); line-height: 1.72; font-weight: 300; }
+    @media (max-width: 750px) { .experience-grid { grid-template-columns: 1fr; } }
+
+    /* TESTIMONIALS */
+    #testimonials { background: var(--card); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 96px 0; }
+    .testimonials-inner { max-width: 800px; margin: 0 auto; text-align: center; padding: 0 40px; }
+    .testimonials-inner .eyebrow { margin-bottom: 56px; }
+    .testimonial-slide { min-height: 200px; display: flex; flex-direction: column; align-items: center; }
+    .stars { display: flex; gap: 4px; justify-content: center; margin-bottom: 24px; }
+    .star { color: var(--gold); font-size: 14px; }
+    .testimonial-slide blockquote { font-family: var(--serif); font-size: clamp(18px, 2.5vw, 26px); font-style: italic; font-weight: 400; color: var(--fg); line-height: 1.5; margin-bottom: 28px; }
+    .testimonial-name { font-size: 13px; font-weight: 500; color: var(--fg); margin-bottom: 5px; }
+    .testimonial-controls { display: flex; align-items: center; justify-content: center; gap: 20px; margin-top: 40px; }
+    .t-btn { width: 40px; height: 40px; border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: border-color 0.2s; }
+    .t-btn:hover { border-color: rgba(200,169,110,0.4); }
+    .t-dots { display: flex; gap: 8px; align-items: center; }
+    .t-dot { height: 1px; background: var(--border); cursor: pointer; transition: all 0.3s; border: none; }
+    .t-dot.active { width: 32px; background: var(--gold); }
+    .t-dot:not(.active) { width: 16px; }
+
+    /* CONTACT */
+    #contact { padding: 112px 0; }
+    .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; }
+    .contact-left .eyebrow { margin-bottom: 20px; }
+    .contact-left h2 { font-family: var(--serif); font-weight: 900; font-size: clamp(38px, 4.5vw, 54px); line-height: 0.93; color: var(--fg); margin-bottom: 24px; }
+    .contact-left > p { font-size: 15px; color: var(--muted); line-height: 1.75; font-weight: 300; max-width: 340px; margin-bottom: 48px; }
+    .contact-details { display: flex; flex-direction: column; gap: 22px; margin-bottom: 48px; }
+    .contact-detail { display: flex; align-items: flex-start; gap: 16px; }
+    .contact-detail-icon { width: 40px; height: 40px; border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
+    .contact-detail-icon svg { stroke: var(--gold); }
+    .contact-detail-text .label-muted { margin-bottom: 4px; }
+    .contact-detail-text p { font-size: 14px; color: var(--fg); }
+    .hours-block { border-top: 1px solid var(--border); padding-top: 28px; }
+    .hours-block .label-muted { margin-bottom: 14px; }
+    .hours-row { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 13px; margin-bottom: 8px; }
+    .hours-row .day { color: var(--muted); }
+    .hours-row .time { color: var(--fg); }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .form-group { margin-bottom: 16px; }
+    .form-group label { display: block; font-size: 9px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+    .form-group input, .form-group select, .form-group textarea { width: 100%; background: var(--card); border: 1px solid var(--border); color: var(--fg); font-family: var(--sans); font-size: 14px; font-weight: 300; padding: 12px 16px; outline: none; transition: border-color 0.2s; appearance: none; }
+    .form-group input::placeholder, .form-group textarea::placeholder { color: var(--muted); }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: rgba(200,169,110,0.45); }
+    .form-group select option { background: var(--card); }
+    .form-group textarea { resize: none; }
+    .form-submit { width: 100%; background: var(--gold); color: var(--bg); border: none; font-family: var(--sans); font-size: 11px; letter-spacing: 0.25em; text-transform: uppercase; font-weight: 500; padding: 16px; cursor: pointer; margin-top: 4px; transition: opacity 0.2s; }
+    .form-submit:hover { opacity: 0.88; }
+    .form-note { font-size: 10px; color: var(--muted); text-align: center; margin-top: 14px; line-height: 1.6; }
+    @media (max-width: 900px) { .contact-grid { grid-template-columns: 1fr; gap: 56px; } .form-row { grid-template-columns: 1fr; } }
+
+    /* FOOTER */
+    footer { background: var(--card); border-top: 1px solid var(--border); padding: 64px 0 0; }
+    .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 48px; margin-bottom: 56px; }
+    .footer-about .logo { margin-bottom: 18px; }
+    .footer-about p { font-size: 13px; color: var(--muted); line-height: 1.75; font-weight: 300; max-width: 280px; }
+    .footer-col h4 { font-size: 9px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--muted); margin-bottom: 20px; }
+    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+    .footer-col ul li a { font-size: 13px; color: var(--muted); transition: color 0.2s; }
+    .footer-col ul li a:hover { color: var(--fg); }
+    .footer-bottom { border-top: 1px solid var(--border); padding: 24px 0; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+    .footer-bottom p { font-size: 10px; color: var(--muted); letter-spacing: 0.12em; }
+    .footer-links { display: flex; gap: 24px; }
+    .footer-links a { font-size: 10px; color: var(--muted); letter-spacing: 0.12em; transition: color 0.2s; }
+    .footer-links a:hover { color: var(--fg); }
+    @media (max-width: 700px) { .footer-grid { grid-template-columns: 1fr; } .footer-bottom { flex-direction: column; text-align: center; } }
+
+    /* MODAL */
+    .modal-backdrop { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 200; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
+    .modal-backdrop.open { display: flex; }
+    .modal { background: var(--card); border: 1px solid var(--border); max-width: 560px; width: calc(100% - 40px); padding: 48px; position: relative; }
+    .modal-close { position: absolute; top: 20px; right: 20px; font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); cursor: pointer; transition: color 0.2s; }
+    .modal-close:hover { color: var(--fg); }
+    .modal h3 { font-family: var(--serif); font-weight: 700; font-size: 30px; color: var(--fg); margin-bottom: 8px; }
+    .modal-body p { font-size: 14px; color: var(--muted); margin-bottom: 20px; line-height: 1.65; }
+    .modal-specs { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 24px; }
+    .modal-spec { border: 1px solid var(--border); padding: 14px 16px; }
+    .modal-spec .label-muted { margin-bottom: 5px; }
+    .modal-spec p { font-family: var(--mono); font-size: 15px; font-weight: 500; color: var(--fg); }
+
+    /* TOAST */
+    .toast { position: fixed; bottom: 32px; right: 32px; background: var(--gold); color: var(--bg); font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; font-weight: 500; padding: 14px 24px; z-index: 300; opacity: 0; transform: translateY(12px); transition: opacity 0.3s, transform 0.3s; pointer-events: none; }
+    .toast.show { opacity: 1; transform: translateY(0); }
+  </style>
+</head>
+<body>
+
+<nav id="nav">
+  <div class="inner">
+    <div class="logo">
+      <span class="logo-mark">APEX</span>
+      <span class="logo-sub">Motor Group</span>
+    </div>
+    <div class="nav-links">
+      <a href="#collection">Collection</a>
+      <a href="#heritage">Heritage</a>
+      <a href="#experience">Experience</a>
+      <a href="#contact">Contact</a>
+    </div>
+    <button class="btn-primary" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">
+      Book a Viewing
+    </button>
+    <button class="hamburger" id="hamburger" aria-label="Menu" onclick="toggleMenu()">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<div class="mobile-menu" id="mobile-menu">
+  <a href="#collection" onclick="closeMenu()">Collection</a>
+  <a href="#heritage" onclick="closeMenu()">Heritage</a>
+  <a href="#experience" onclick="closeMenu()">Experience</a>
+  <a href="#contact" onclick="closeMenu()">Contact</a>
+  <button class="btn-primary" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'});closeMenu()">Book a Viewing</button>
+</div>
+
+<section id="hero">
+  <img class="hero-bg" src="https://images.unsplash.com/photo-1544636331-e26879cd4d9b?w=1800&h=1100&fit=crop&auto=format" alt="Apex Motor Group hero" />
+  <div class="hero-overlay"></div>
+  <div class="hero-overlay-side"></div>
+  <div class="hero-content">
+    <p class="label eyebrow">Est. 1977 &nbsp;·&nbsp; London &nbsp;·&nbsp; Geneva &nbsp;·&nbsp; Dubai</p>
+    <h1>Drive the<br><em>Exceptional.</em></h1>
+    <p>Apex Motor Group curates the world's most extraordinary automobiles for discerning collectors and enthusiasts. Each vehicle hand-selected, every detail verified.</p>
+    <div class="hero-ctas">
+      <button class="btn-primary" onclick="document.getElementById('collection').scrollIntoView({behavior:'smooth'})">
+        View Collection
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </button>
+      <button class="btn-outline" onclick="document.getElementById('heritage').scrollIntoView({behavior:'smooth'})">Our Heritage</button>
+    </div>
+  </div>
+  <div class="hero-scroll-hint">
+    <div class="line"></div>
+    <span>Scroll to explore</span>
+    <svg width="12" height="12" fill="none" stroke="#888070" stroke-width="2" viewBox="0 0 24 24"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+  </div>
+</section>
+
+<section id="stats">
+  <div class="container">
+    <div class="stats-grid">
+      <div class="stat-item"><div class="stat-value">47</div><div class="label-muted">Years of Excellence</div></div>
+      <div class="stat-item"><div class="stat-value">2,400+</div><div class="label-muted">Vehicles Delivered</div></div>
+      <div class="stat-item"><div class="stat-value">98%</div><div class="label-muted">Client Satisfaction</div></div>
+      <div class="stat-item"><div class="stat-value">12</div><div class="label-muted">Brand Partners</div></div>
+    </div>
+  </div>
+</section>
+
+<section id="collection">
+  <div class="container">
+    <div class="section-header">
+      <div>
+        <p class="label">Current Inventory</p>
+        <h2 class="section-title">The Collection</h2>
+      </div>
+      <div class="filter-bar" id="filter-bar">
+        <button class="filter-btn active" data-cat="ALL">All</button>
+        <button class="filter-btn" data-cat="Grand Tourer">Grand Tourer</button>
+        <button class="filter-btn" data-cat="Sport Sedan">Sport Sedan</button>
+        <button class="filter-btn" data-cat="Luxury Coupé">Luxury Coupé</button>
+        <button class="filter-btn" data-cat="Open-Top">Open-Top</button>
+      </div>
+    </div>
+    <div class="vehicles-grid" id="vehicles-grid"></div>
+  </div>
+</section>
+
+<section id="heritage">
+  <div class="container">
+    <div class="heritage-grid">
+      <div class="heritage-text">
+        <p class="label eyebrow">Since 1977</p>
+        <h2>Built on a<br><em>legacy</em><br>of taste.</h2>
+        <p>Founded in Mayfair in 1977 by Charles Apex, our group has spent nearly five decades cultivating relationships with the world's premier manufacturers — and with clients who understand that a great automobile is more than transport.</p>
+        <p>Every vehicle in our showroom has passed through the hands of our master technicians. We do not simply sell cars — we curate experiences, and we stand behind each one unconditionally.</p>
+        <button class="btn-outline" onclick="document.getElementById('experience').scrollIntoView({behavior:'smooth'})">
+          The Apex Experience
+          <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </button>
+      </div>
+      <div class="heritage-image">
+        <img src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=800&h=700&fit=crop&auto=format" alt="Polished luxury vehicle in showroom" />
+        <div class="heritage-image-overlay"></div>
+        <div class="heritage-quote">
+          <blockquote>"Perfection is not a destination — it is a discipline."</blockquote>
+          <p class="label-muted">— Charles Apex, Founder</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="experience">
+  <div class="container">
+    <div class="experience-intro">
+      <p class="label eyebrow">What Sets Us Apart</p>
+      <h2 class="section-title">The Apex Difference</h2>
+    </div>
+    <div class="experience-grid">
+      <div class="exp-card">
+        <div class="exp-card-img">
+          <img src="https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=600&h=400&fit=crop&auto=format" alt="Private consultation" />
+          <div class="exp-num">01</div>
+        </div>
+        <div class="exp-card-body">
+          <h3>Private Consultations</h3>
+          <p>One-on-one sessions with our senior advisors — in-showroom, at your residence, or aboard our private viewing lounge in Geneva.</p>
+        </div>
+      </div>
+      <div class="exp-card">
+        <div class="exp-card-img">
+          <img src="https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?w=600&h=400&fit=crop&auto=format" alt="White-glove delivery" />
+          <div class="exp-num">02</div>
+        </div>
+        <div class="exp-card-body">
+          <h3>White-Glove Delivery</h3>
+          <p>Your vehicle arrives fully detailed, inspected, and presented with a bespoke accessory kit. We handle all registration paperwork worldwide.</p>
+        </div>
+      </div>
+      <div class="exp-card">
+        <div class="exp-card-img">
+          <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&h=400&fit=crop&auto=format" alt="Lifetime concierge" />
+          <div class="exp-num">03</div>
+        </div>
+        <div class="exp-card-body">
+          <h3>Lifetime Concierge</h3>
+          <p>Apex owners receive lifetime access to our concierge — from priority service scheduling to sourcing parts for vehicles no longer in production.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="testimonials">
+  <div class="testimonials-inner">
+    <p class="label eyebrow">Client Voices</p>
+    <div class="testimonial-slide" id="testimonial-slide"></div>
+    <div class="testimonial-controls">
+      <button class="t-btn" onclick="prevTestimonial()">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <div class="t-dots" id="t-dots"></div>
+      <button class="t-btn" onclick="nextTestimonial()">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+      </button>
+    </div>
+  </div>
+</section>
+
+<section id="contact">
+  <div class="container">
+    <div class="contact-grid">
+      <div class="contact-left">
+        <p class="label eyebrow">Reach Us</p>
+        <h2>Visit the<br>Showroom.</h2>
+        <p>Our doors are open by appointment. Arrange a private viewing, test drive, or come in to explore what we have in residence this season.</p>
+        <div class="contact-details">
+          <div class="contact-detail">
+            <div class="contact-detail-icon">
+              <svg width="14" height="14" fill="none" stroke-width="1.8" viewBox="0 0 24 24"><path d="M12 22s-8-4.5-8-11.8A8 8 0 0112 2a8 8 0 018 8.2c0 7.3-8 11.8-8 11.8z"/><circle cx="12" cy="10" r="3"/></svg>
+            </div>
+            <div class="contact-detail-text">
+              <p class="label-muted">Address</p>
+              <p>14 Berkeley Square, Mayfair, London W1J 6BS</p>
+            </div>
+          </div>
+          <div class="contact-detail">
+            <div class="contact-detail-icon">
+              <svg width="14" height="14" fill="none" stroke-width="1.8" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 01.07 1.18 2 2 0 012.05 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+            </div>
+            <div class="contact-detail-text">
+              <p class="label-muted">Phone</p>
+              <p>+44 20 7946 0821</p>
+            </div>
+          </div>
+          <div class="contact-detail">
+            <div class="contact-detail-icon">
+              <svg width="14" height="14" fill="none" stroke-width="1.8" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            </div>
+            <div class="contact-detail-text">
+              <p class="label-muted">Email</p>
+              <p>enquiries@apexmotorgroup.com</p>
+            </div>
+          </div>
+        </div>
+        <div class="hours-block">
+          <p class="label-muted">Showroom Hours</p>
+          <div class="hours-row"><span class="day">Mon – Fri</span><span class="time">09:00 – 19:00</span></div>
+          <div class="hours-row"><span class="day">Saturday</span><span class="time">10:00 – 17:00</span></div>
+          <div class="hours-row"><span class="day">Sunday</span><span class="time">By appointment</span></div>
+        </div>
+      </div>
+      <div>
+        <form id="contact-form" onsubmit="submitForm(event)">
+          <div class="form-row">
+            <div class="form-group"><label>First Name</label><input type="text" placeholder="Eleanor" required /></div>
+            <div class="form-group"><label>Last Name</label><input type="text" placeholder="Marsh" required /></div>
+          </div>
+          <div class="form-group"><label>Email Address</label><input type="email" placeholder="your@email.com" /></div>
+          <div class="form-group"><label>Phone Number</label><input type="tel" placeholder="+44 ..." /></div>
+          <div class="form-group">
+            <label>Vehicle of Interest</label>
+            <select>
+              <option value="">Select a model…</option>
+              <option>Zenith GT-R — Grand Tourer</option>
+              <option>Meridian S9 — Sport Sedan</option>
+              <option>Vantara Coupé — Luxury Coupé</option>
+              <option>Solara Roadster — Open-Top</option>
+              <option>General enquiry</option>
+            </select>
+          </div>
+          <div class="form-group"><label>Message</label><textarea rows="5" placeholder="Tell us how we can assist you…"></textarea></div>
+          <button type="submit" class="form-submit">Send Enquiry</button>
+          <p class="form-note">Your details are held in strict confidence. We do not share client information with third parties.</p>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-about">
+        <div class="logo"><span class="logo-mark">APEX</span><span class="logo-sub">Motor Group</span></div>
+        <p>Curating the world's finest automobiles for collectors and enthusiasts since 1977. Showrooms in London, Geneva, and Dubai.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Explore</h4>
+        <ul>
+          <li><a href="#collection">Current Collection</a></li>
+          <li><a href="#">Past Inventory</a></li>
+          <li><a href="#">Bespoke Orders</a></li>
+          <li><a href="#">Vehicle History</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <ul>
+          <li><a href="#heritage">Our Heritage</a></li>
+          <li><a href="#experience">The Apex Experience</a></li>
+          <li><a href="#">Media &amp; Press</a></li>
+          <li><a href="#">Careers</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 Apex Motor Group Ltd. All rights reserved. Registered in England &amp; Wales.</p>
+      <div class="footer-links">
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Use</a>
+        <a href="#">Cookie Settings</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<div class="modal-backdrop" id="modal" onclick="closeModal(event)">
+  <div class="modal" id="modal-inner">
+    <button class="modal-close" onclick="closeModal()">✕ Close</button>
+    <div id="modal-body"></div>
+    <button class="btn-primary" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'});closeModal()">
+      Request a Viewing
+      <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </button>
+  </div>
+</div>
+
+<div class="toast" id="toast">Enquiry sent — we'll be in touch shortly.</div>
+
+<script>
+const vehicles = [
+  { id:1, name:"Zenith GT-R", category:"Grand Tourer", price:"218,500", year:2025, power:"650 hp", torque:"820 Nm", zeroToSixty:"3.1s", topSpeed:"318 km/h", color:"Obsidian Black", badge:"NEW MODEL", image:"https://images.unsplash.com/photo-1544636331-e26879cd4d9b?w=900&h=600&fit=crop&auto=format", desc:"The GT-R represents the pinnacle of grand touring — a machine that devours continents as effortlessly as it commands city boulevards." },
+  { id:2, name:"Meridian S9", category:"Sport Sedan", price:"162,000", year:2025, power:"540 hp", torque:"680 Nm", zeroToSixty:"3.6s", topSpeed:"295 km/h", color:"Arctic Silver", badge:"BESTSELLER", image:"https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=900&h=600&fit=crop&auto=format", desc:"Four doors that refuse to compromise. The S9 delivers supercar performance with the daily refinement of a true executive sedan." },
+  { id:3, name:"Vantara Coupé", category:"Luxury Coupé", price:"289,000", year:2024, power:"720 hp", torque:"950 Nm", zeroToSixty:"2.8s", topSpeed:"340 km/h", color:"Champagne Gold", badge:"LIMITED", image:"https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=900&h=600&fit=crop&auto=format", desc:"Only 80 units produced worldwide. The Vantara Coupé is as much sculpture as automobile — a rolling statement of taste without compromise." },
+  { id:4, name:"Solara Roadster", category:"Open-Top", price:"195,000", year:2025, power:"480 hp", torque:"620 Nm", zeroToSixty:"3.9s", topSpeed:"278 km/h", color:"Venetian Red", badge:null, image:"https://images.unsplash.com/photo-1580274455191-1c62238fa333?w=900&h=600&fit=crop&auto=format", desc:"Wind in. Roof off. The Solara Roadster distils the joy of driving to its purest form — open skies, Italian leather, and 480 willing horses." }
+];
+
+const testimonials = [
+  { name:"Eleanor Marsh", title:"Creative Director, Studio M", quote:"The Zenith GT-R transformed my daily commute into something I actually anticipate. The team at Apex handled every detail with extraordinary care." },
+  { name:"James Thornton", title:"Principal Architect", quote:"I have owned a dozen luxury vehicles over the years. Nothing compares to the craftsmanship Apex delivers — from the first consultation to the moment you take the wheel." },
+  { name:"Sophia Reeve", title:"Private Equity Partner", quote:"The Vantara Coupé is exactly what I wanted — and Apex found me the limited colorway I thought was impossible to source. Exceptional service." }
+];
+
+window.addEventListener('scroll', () => {
+  document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 60);
+}, { passive: true });
+
+function toggleMenu() {
+  document.getElementById('hamburger').classList.toggle('open');
+  document.getElementById('mobile-menu').classList.toggle('open');
+}
+function closeMenu() {
+  document.getElementById('hamburger').classList.remove('open');
+  document.getElementById('mobile-menu').classList.remove('open');
+}
+
+let activeFilter = 'ALL';
+document.getElementById('filter-bar').addEventListener('click', e => {
+  const btn = e.target.closest('.filter-btn');
+  if (!btn) return;
+  activeFilter = btn.dataset.cat;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderVehicles();
+});
+
+function renderVehicles() {
+  const list = activeFilter === 'ALL' ? vehicles : vehicles.filter(v => v.category === activeFilter);
+  document.getElementById('vehicles-grid').innerHTML = list.length ? list.map(v => `
+    <div class="vehicle-card" onclick="openModal(${v.id})">
+      <div class="vehicle-img">
+        <img src="${v.image}" alt="${v.name}" loading="lazy" />
+        <div class="vehicle-img-overlay"></div>
+        ${v.badge ? `<span class="vehicle-badge">${v.badge}</span>` : ''}
+      </div>
+      <div class="vehicle-info">
+        <div class="vehicle-meta">
+          <div>
+            <p class="label-muted">${v.category} · ${v.year}</p>
+            <h3 class="vehicle-name">${v.name}</h3>
+          </div>
+          <div style="text-align:right">
+            <p class="label-muted">from</p>
+            <p class="vehicle-price">£${v.price}</p>
+          </div>
+        </div>
+        <div class="vehicle-specs">
+          <div><p class="label-muted">Power</p><p class="spec-value">${v.power}</p></div>
+          <div><p class="label-muted">0–60 mph</p><p class="spec-value">${v.zeroToSixty}</p></div>
+          <div><p class="label-muted">Top Speed</p><p class="spec-value">${v.topSpeed}</p></div>
+        </div>
+        <div class="vehicle-footer">
+          <span class="vehicle-color">${v.color}</span>
+          <span class="vehicle-cta">Request Details <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+        </div>
+      </div>
+    </div>`).join('') :
+    '<div style="padding:80px;text-align:center;color:var(--muted);font-size:12px;letter-spacing:0.2em;text-transform:uppercase;grid-column:1/-1">No vehicles in this category currently</div>';
+}
+renderVehicles();
+
+function openModal(id) {
+  const v = vehicles.find(v => v.id === id);
+  document.getElementById('modal-body').innerHTML = `
+    <p class="label-muted" style="margin-bottom:6px">${v.category} · ${v.year}</p>
+    <h3>${v.name}</h3>
+    <p style="margin:12px 0 24px">${v.desc}</p>
+    <div class="modal-specs">
+      <div class="modal-spec"><p class="label-muted">Power</p><p>${v.power}</p></div>
+      <div class="modal-spec"><p class="label-muted">Torque</p><p>${v.torque}</p></div>
+      <div class="modal-spec"><p class="label-muted">0–60 mph</p><p>${v.zeroToSixty}</p></div>
+      <div class="modal-spec"><p class="label-muted">Top Speed</p><p>${v.topSpeed}</p></div>
+    </div>
+    <p class="label-muted" style="margin-bottom:28px">Starting from <strong style="color:var(--fg);font-family:var(--mono)">£${v.price}</strong> · ${v.color}</p>`;
+  document.getElementById('modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeModal(e) {
+  if (e && e.target !== document.getElementById('modal')) return;
+  document.getElementById('modal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { document.getElementById('modal').classList.remove('open'); document.body.style.overflow = ''; }
+});
+
+let tIdx = 0;
+function renderTestimonial() {
+  const t = testimonials[tIdx];
+  document.getElementById('testimonial-slide').innerHTML = `
+    <div class="stars">${'<span class="star">★</span>'.repeat(5)}</div>
+    <blockquote>"${t.quote}"</blockquote>
+    <p class="testimonial-name">${t.name}</p>
+    <p class="label-muted">${t.title}</p>`;
+  document.getElementById('t-dots').innerHTML = testimonials.map((_,i) =>
+    `<button class="t-dot ${i===tIdx?'active':''}" onclick="goTestimonial(${i})"></button>`).join('');
+}
+function nextTestimonial() { tIdx = (tIdx+1) % testimonials.length; renderTestimonial(); }
+function prevTestimonial() { tIdx = (tIdx-1+testimonials.length) % testimonials.length; renderTestimonial(); }
+function goTestimonial(i) { tIdx = i; renderTestimonial(); }
+renderTestimonial();
+setInterval(nextTestimonial, 6000);
+
+function submitForm(e) {
+  e.preventDefault();
+  const toast = document.getElementById('toast');
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 3800);
+  e.target.reset();
+}
+</script>
+</body>
+</html>
